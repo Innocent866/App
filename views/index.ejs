@@ -10,11 +10,14 @@
     <main class="container">
         <h2>Welcome to my Tasks Page</h2>
         <section>
-            <% if (tasks.lendth){ %>
-                <% tasks.map((task) => { %>
-                    <h2><%= tasks.name %></h2>
-                    <hp><%= tasks.task %></p>
-
+            <% if (tasks.length){ %>
+                <% tasks.map((tasks) => { %>
+                    <a href="/api/v1/route/<%- tasks._id %>">
+                        <h2><%= tasks.name %></h2>
+                        <p><%= tasks.title %></p>
+                        <p><%= tasks.task %></p>
+                        <p><%= tasks._id %></p>
+                    </a>
                     <% }) %>
                 
                     <% }else{ %>

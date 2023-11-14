@@ -1,57 +1,151 @@
-const express = require('express')
-const app = express()
-const PORT =5050;
-const morgan = require('morgan')
-const mongoose = require('mongoose')
-require('dotenv/config')
+const express = require("express");
+const app = express();
+const port = 5050;
+const morgan = require("morgan");
+// const mongoose = require("mongoose");
+const Task = require()
+const connect = require("./db/mongoDB");
+require("dotenv/config");
+const Tasks = require("./model/taskModel");
 
-const mongoDBURL = process.env.DBUrL
-// custom middlewares
-app.set('view engine', 'ejs')
-// app.use((req,res,next)=>{
-//     console.log('new request made');
-//     console.log('host:', req.hostname);
-//     console.log('path', req.path);
-//     console.log('method', req.method);
-//     next()
-// })
+//custom middlewares
+app.set("view engine", "ejs");
+app.use(express.urlencoded({extended: true}));
+// app.set("view engine", "ejs");
+// app.use((req, res) => {
+//   console.log("new request made");
+//   console.log("host: ", req.hostname);
+//   console.log("path", req.path);
+//   console.log("method", req.method);
+//   next();
+// });
 
-app.use(morgan('dev'))
-app.use(express.static('public'))
+//TESTING DATABASE AND MODEL
+// .save() method is a mongoose method for fettingall the data from out database
+app.get("/post-task", async (req, res) => {
+  const testData = new Tasks({
+    name: "Innocent",
+    title: "express tuts",
+    task: "we started using mongoDB",
+  });
 
-// routes
-// app.get('/', (req,res)=>{
-//     res.send('Welcome')
-// })
+  try {
+    const newTasks = await testData.save();
+    res.status(201).send(newTasks);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-const tasks =[
-    {name: 'Halimat', title:'Halimat clothing', task:'Client delievery to morning'},
-    {name: 'Chimelu', title:'I.T exprience', task:'To give instructor my log book'},
-    {name: 'Steve', title:'New House Alert', task:'Show client a new house'}
-]
+// .find() method is a mongoose method for fettingall the data from out database
 
-app.get('/',(req,res)=>{
-    res.render('index',{title:'Home || Page', tasks})
+app.get('/get-posts',async(req,res)=>{
+    try{
+        const getTasks = await Tasks.find();
+        res.status(200).send(getTasks)
+    }catch(error){
+        console.log(error);
+    }
 })
 
-app.get('/about',(req,res)=>{
-    res.render('about',{title:'About || Page'})
+// .findById() method is a mongoose method for fettingall the data from out database
+app.get('/single-task',async(req,res)=>{
+    try{
+        const singleTask = await Tasks.findById()
+        res.status(200).send(singleTask)
+    }catch(error){
+        console.log(error);
+    }
 })
 
-app.get('/tasks',(req,res)=>{
-    res.render('tasks',{title:'Task || Page'})
+// END OF DATABASE TEST
+
+app.use(morgan("dev"));
+app.use(express.static("public"));
+
+// Routee
+// app.get("/", (req, res) => {
+//   res.send("Welcome Home");
+// });
+
+
+// const tasks = [
+//   {
+//     name: "Emphil",
+//     title: "emphil clothing",
+//     task: "client deliveries this morning",
+//   },
+//   {
+//     name: "Steve",
+//     title: "steve clothing",
+//     task: "client deliveries this afternoon",
+//   },
+//   {
+//     name: "Enoo",
+//     title: "enoo clothing",
+//     task: "client deliveries this evening",
+//   },
+// ];
+
+// api
+app.post('/api/v1/creat',async(req,res)=>{
+  // console.log(req.body)
+  const newTasks = new Tasks(req.body)
+  try{
+    await newTasks.save();
+    res.status(201).redirect('/')
+  }
+  catch(error){
+    console.log(error);
+  }
 })
 
-app.use((req,res)=>{
-    res.render('404',{title:'Error'})
+app.get('/api/v1/route/:id',async(req,res)=>{
+  console.log(req.params.id);
+  const id = req.params.id
+    console.log(id);
+    try{
+      const result = await Tasks.findById(id)
+       res.status(200).render('singlePage',{title:'Single || Page',task:result})
+    }catch(error){
+        console.log(error);
+    }
+
 })
+// Page routes
+app.get("/", async (req, res) => {
+  try{
+    const result = await Tasks.find();
+    res.render("index", { title: "Home || Page ", tasks: result});
+  }catch(error){
+    console.log(error);
+  }
+ 
+});
+
+// route params
+
+
+app.get("/about", (req, res) => {
+  res.render("about", { title: "About || Page " });
+});
+
+app.get("/tasks", (req, res) => {
+  res.render("tasks", { title: "Task || Page " });
+});
+
+app.use((req, res) => {
+  res.render("404", { title: "Error || Page " });
+});
 
 // db connection
-mongoose.connect(mongoDBURL)
-.then(()=>{
-    console.log('Connected Successfully!');
-})
 
-app.listen(PORT,()=>{
-    console.log(`Server connected to http://localhost:${PORT}`);
+connect().then(() => {
+  try {
+    app.listen(port, () => {
+      console.log(`server connected to http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.log("cannot connect to the server");
+  }
 })

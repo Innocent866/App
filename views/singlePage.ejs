@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./Partials/header.ejs') %>
+<body>
+    <%- include('./Partials/nav.ejs') %>
+
+    <div class="container">
+       <h1> <%- task.name %></h1>
+       <h2><%- task.title %></h2>
+       <p><%- task.task %></p>
+       <div>
+        <button>
+            Delete
+        </button>
+        <button>
+            Edit
+        </button>
+       </div>
+    </div>
+
+
+    <%- include('./Partials/footer.ejs') %>
+</body>
+</html>
