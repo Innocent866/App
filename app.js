@@ -3,7 +3,7 @@ const app = express();
 const port = 5050;
 const morgan = require("morgan");
 // const mongoose = require("mongoose");
-const Task = require()
+const Task = require('./model/taskModel')
 const connect = require("./db/mongoDB");
 require("dotenv/config");
 const Tasks = require("./model/taskModel");
