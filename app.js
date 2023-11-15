@@ -5,6 +5,7 @@ const morgan = require("morgan");
 // const mongoose = require("mongoose");
 const Task = require('./model/taskModel')
 const connect = require("./db/mongoDB");
+const taskRouter = require("./router/taskRouter")
 require("dotenv/config");
 const Tasks = require("./model/taskModel");
 
@@ -88,30 +89,8 @@ app.use(express.static("public"));
 // ];
 
 // api
-app.post('/api/v1/creat',async(req,res)=>{
-  // console.log(req.body)
-  const newTasks = new Tasks(req.body)
-  try{
-    await newTasks.save();
-    res.status(201).redirect('/')
-  }
-  catch(error){
-    console.log(error);
-  }
-})
+app.use('/api/v1',taskRouter)
 
-app.get('/api/v1/route/:id',async(req,res)=>{
-  console.log(req.params.id);
-  const id = req.params.id
-    console.log(id);
-    try{
-      const result = await Tasks.findById(id)
-       res.status(200).render('singlePage',{title:'Single || Page',task:result})
-    }catch(error){
-        console.log(error);
-    }
-
-})
 // Page routes
 app.get("/", async (req, res) => {
   try{
@@ -122,9 +101,6 @@ app.get("/", async (req, res) => {
   }
  
 });
-
-// route params
-
 
 app.get("/about", (req, res) => {
   res.render("about", { title: "About || Page " });
