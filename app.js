@@ -1,9 +1,8 @@
 const express = require("express");
 const app = express();
-const port = 5050;
+const port = process.env.PORT || 5050;
 const morgan = require("morgan");
 // const mongoose = require("mongoose");
-const Task = require('./model/taskModel')
 const connect = require("./db/mongoDB");
 const taskRouter = require("./router/taskRouter")
 require("dotenv/config");
@@ -108,6 +107,10 @@ app.get("/about", (req, res) => {
 
 app.get("/tasks", (req, res) => {
   res.render("tasks", { title: "Task || Page " });
+});
+
+app.get("/edit", (req, res) => {
+  res.render("edit", { title: "Edit || Page " });
 });
 
 app.use((req, res) => {

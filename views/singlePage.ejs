@@ -5,15 +5,15 @@
     <%- include('./Partials/nav.ejs') %>
 
     <div class="container">
-       <h1> <%- task.name %></h1>
-       <h2><%- task.title %></h2>
-       <p><%- task.task %></p>
+       <h1> <%= task.name %></h1>
+       <h2><%= task.title %></h2>
+       <p><%= task.task %></p>
        <div>
         <button>
-            <a href="/api/v1/delete/<%- task._id %>">Delete</a>
+            <a href="/api/v1/delete/<%= task._id %>">Delete</a>
         </button>
         <button>
-            Edit
+            <a href="/api/v1/edit/<%= task._id %>"> Edit</a>
         </button>
        </div>
     </div>
